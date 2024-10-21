@@ -1,37 +1,39 @@
 package com.example.ex02;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-public class MainActivity extends Activity {
-    Button btncall;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-    @Override
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-        // Hiển thị thông báo khi onCreate được gọi
-        Toast.makeText(this, "CR424 - onCreate()", Toast.LENGTH_SHORT).show();
-
-        // Ánh xạ nút btncall
-        btncall = findViewById(R.id.btncall);
-
-        // Xử lý sự kiện khi người dùng nhấn nút btncall
-        btncall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Hiển thị thông báo khi nút được nhấn
-                Toast.makeText(MainActivity.this, "Button clicked", Toast.LENGTH_SHORT).show();
-
-                // Tạo một intent để chuyển sang subactivity
-                Intent intent1 = new Intent(MainActivity.this, Subactivity.class);
-                startActivity(intent1);
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
+
+        List<Country> countries = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            countries.add(new Country(R.drawable.ukflag, "England", "London"));
+        }
+
+        recyclerView = findViewById(R.id.ryc_view);
+        MyAdapter myAdapter = new MyAdapter(countries);
+
+        recyclerView.setAdapter(myAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
     }
 }
